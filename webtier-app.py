@@ -6,6 +6,7 @@ import json
 app = Flask(__name__)
 
 sqs = boto3.client('sqs',region_name='us-east-1')
+
 input_queue_url = sqs.get_queue_url(QueueName="web-app-image-transport")["QueueUrl"]
 output_queue_url = sqs.get_queue_url(QueueName="app-web-result-queue")["QueueUrl"]
 

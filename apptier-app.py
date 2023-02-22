@@ -15,6 +15,7 @@ s3 = boto3.client('s3')
 
 while True:
     response = sqs.receive_message(QueueUrl=input_queue_url, MaxNumberOfMessages=1, VisibilityTimeout=50)
+    
     if 'Messages' in response:
         message = response['Messages'][0]['Body']
         dict = json.loads(message)
