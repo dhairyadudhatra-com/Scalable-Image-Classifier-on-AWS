@@ -14,8 +14,7 @@ s3 = boto3.client('s3')
 
 
 while True:
-    response = sqs.receive_message(QueueUrl=input_queue_url, MaxNumberOfMessages=1, VisibilityTimeout=50)
-    
+    response = sqs.receive_message(QueueUrl=input_queue_url, MaxNumberOfMessages=1)
     if 'Messages' in response:
         message = response['Messages'][0]['Body']
         dict = json.loads(message)
@@ -31,12 +30,12 @@ while True:
         output = subprocess.check_output(['python3', 'image_classification.py', imagename])
         
         with open(imagename, 'rb') as f:
-            s3.upload_fileobj(f, 'image-classifier-input-bucket', imagename)
+            s3.upload_fileobj(f, 'input-bucket-images', imagename)
 
         output_string =  output.decode('utf-8')
         print(output_string)
         output = b"(" + output[0:-1] + b")"
-        s3.put_object(Body=output, Bucket='image-classifier-output-bucket', Key=imagename.split('.')[0])
+        s3.put_object(Body=output, Bucket='output-bucket-images', Key=imagename.split('.')[0])
 
         os.remove(imagename)
 
