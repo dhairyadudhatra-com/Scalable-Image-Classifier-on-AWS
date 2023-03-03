@@ -9,19 +9,45 @@ We have used EC2 instances for hosting Web and App tier. Web tier sends these im
 ## Architecture
 ![Arch Image](https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/arch.png)
 
-
-
-## How to Setup the Environments
-To run this project, clone this repo:
+## How to Run the Project
+- To run this project, clone this repo:
     ```
     $ git clone https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS.git
     ```
+- Now run the following command in the `Scalable-Image-Classifier-on-AWS.git/` directory.
+    ```
+    $ python3 multithread_workload_generator.py --num_request 100 --url 'http:// <webtier-public-ip> /' --image_folder "imagenet-100/"
+    ```
+    This command will send  100 concurrent requests to the web server.
+    
 
-Now setup these two environments as suggested:
+## How to Setup the Environments
+Setup these three environments as suggested:
 
 
+**AWS Resources Setup:**
+ - The level of this project is 300 so it is expected that learner have fundamental knowledge about AWS services.
+ - It is suggested  that learner create all the resources in the `us-east-1` region.
+* AWS SQS  
+    - Create two queues with default settings and name them as `web-app-image-transport` and `app-web-result-queue`.
 
+* AWS CloudWatch
+    - Create two alarms. One for scaling up and scaling down.
+    - Select the `ApproximateNumberOfMessagesVisible` metric of request queue.
+    - Implement these seetings.
+           * `Statistic - sum`   
+           * `Period - 1 minute`
+           * For scaleup alarm :  static value should be greater than 25.
+           * For scaledown alarm: static value  should be smaller than 2.
+              
+* AWS EC2 AutoScaling
+    - Create AMI from the app tier instance and then use this AMI to create the template.
+    - Launch Auto scaling by using this template.
+    - In the dynamic policy configuration create two policies. one for scaling up and second for scaling down.
 
+* AWS S3
+    - Create two s3 buckets with default settings and with unique names.
+    - Rewrite these names in the `app-tier.py` file. 
 **Web Tier:**
 
 - Create an Ubuntu based EC2 instance in AWS.
@@ -56,9 +82,6 @@ Now setup these two environments as suggested:
     $ sudo systemctl restart nginx
     ```
 
-
-
-
 **App Tier:**
 
 - Create an EC2 instance from this [public AMI](https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#ImageDetails:imageId=ami-01e547694fca32b28).
@@ -86,25 +109,8 @@ Now setup these two environments as suggested:
     ```
 
 
-**AWS Resources Setup:**
-
-* AWS SQS  
-
-    - Create two queues with default settings and name them as `web-app-image-transport` and `app-web-result-queue`.
-
     
-* AWS CloudWatch
-
-    - Create two alarms. One for scaling up and scaling down.
-    - Select time-period of one minute and 
-
-* AWS EC2 AutoScaling
-
-    -
     
-
-
-
 
 ## Creators
 #### Team -  DADCloud
