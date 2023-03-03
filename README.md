@@ -15,10 +15,9 @@ We have used EC2 instances for hosting Web and App tier. Web tier sends these im
 
 ## How to Setup the environment
 To run this project, clone this repo:
-
-```
-$ git clone https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS.git
-```
+    ```
+    $ git clone https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS.git
+    ```
 
 Now setup these two environments as suggested:
 
@@ -26,21 +25,36 @@ Now setup these two environments as suggested:
 **Web Tier:**
 
 - Create an Ubuntu based EC2 instance in AWS.
-- Install nginx.
+- Install the dependencies and libraries by following these commands.
     ```
     $ sudo apt update
     $ sudo apt install nginx -y
-    ```
-- Use the following command to install pip package manager.
-    ```
     $ sudo apt install python3-pip
-    ```
-- Install Flask framework and boto3 library.
-    ```
     $ pip install Flask boto3
     ```
-- All the requirements are downloaded so now let's setup our Python file.
-- Create a directory called `flaskapp` in the home directory of Ubuntu user and save the file `webtier-app.py` in this directory.
+- Setup the work directory and save these files.
+    ```
+    $ mkdir flaskapp && cd flaskapp
+    $ wget https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/webtier-app.py /
+      https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/default
+      https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/pythonfrontend.service
+    ```
+- Move the file `pythonfrontend.service` to the `/lib/systemd/system` and run these commands to create a system service.
+    ```
+    $ sudo system daemon-reload
+    $ sudo systemctl start pythonfrontend.service
+    $ sudo systemctl enable pythonfrontend.service
+    ```
+- Check the status of service by following command.
+    ```
+    $ sudo systemctl status pythonfrontend.service
+    ```
+- Replace the old `default` file in `/etc/nginx/sites-available/` with the new `default` file just downloaded.
+
+- Now restart the Nginx service after saving config file.
+    ```
+    $ sudo systemctl restart nginx
+    ```
 
 
 
@@ -49,16 +63,18 @@ Now setup these two environments as suggested:
 
 - Create an EC2 instance from this [public AMI](https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#ImageDetails:imageId=ami-01e547694fca32b28).
 - Login as Ubuntu user.
-- Use the following command to install pip and boto3 library.
+- Use the following command to install all the requirements.
     ```
     $ sudo apt update
     $ sudo apt install python3-pip
     $ pip install boto3
     ```
-- Go to Home directory. You will find a python file, a sample image.
-- Save the file `apptier-app.py`.
-- Save the file `pythonbackend.service` in `/lib/systemd/system` directory.
-- We need to Start this system service and Enable it.
+- Change your current directory to home directory of Ubuntu user and download these file.
+    ```
+    $ wget https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/apptier-app.py /
+      https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/pythonbackend.service /
+    ```
+- Move the file `pythonbackend.service` to the `/lib/systemd/system` and run these commands to create a system service.
     ```
     $ sudo system daemon-reload
     $ sudo systemctl start pythonbackend.service
