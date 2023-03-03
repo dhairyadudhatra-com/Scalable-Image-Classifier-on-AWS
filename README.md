@@ -6,7 +6,12 @@ We have made a 3 tier web application which takes an image, classifies it, store
 We have used EC2 instances for hosting Web and App tier. Web tier sends these images to App tier through a SQS queue and we are monitoring this queue using Cloudwatch service. We use these Cloudwatch alarms to give signal to AutoScalling which further decides if there is a need to scale app tier or not.
 
 
-## How to Setup the environment
+## Architecture
+![Arch Image](https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/arch.png)
+
+
+
+## How to Setup the Environments
 To run this project, clone this repo:
     ```
     $ git clone https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS.git
@@ -101,7 +106,7 @@ Now setup these two environments as suggested:
 
 
 
-## Authors
+## Creators
 #### Team -  DADCloud
 - [@Dhairya Dudhatra](https://github.com/Dhairya-Dudhatra)
 - [@Arush Patel](https://github.com/arushPatel10)
