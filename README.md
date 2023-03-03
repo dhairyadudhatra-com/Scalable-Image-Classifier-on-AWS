@@ -36,7 +36,7 @@ Now setup these two environments as suggested:
     ```
     $ mkdir flaskapp && cd flaskapp
     $ wget https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/webtier-app.py /
-      https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/default
+      https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/default / 
       https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/pythonfrontend.service
     ```
 - Move the file `pythonfrontend.service` to the `/lib/systemd/system` and run these commands to create a system service.
@@ -72,7 +72,7 @@ Now setup these two environments as suggested:
 - Change your current directory to home directory of Ubuntu user and download these file.
     ```
     $ wget https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/apptier-app.py /
-      https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/pythonbackend.service /
+      https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/pythonbackend.service 
     ```
 - Move the file `pythonbackend.service` to the `/lib/systemd/system` and run these commands to create a system service.
     ```
