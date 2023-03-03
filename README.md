@@ -6,13 +6,6 @@ We have made a 3 tier web application which takes an image, classifies it, store
 We have used EC2 instances for hosting Web and App tier. Web tier sends these images to App tier through a SQS queue and we are monitoring this queue using Cloudwatch service. We use these Cloudwatch alarms to give signal to AutoScalling which further decides if there is a need to scale app tier or not.
 
 
-## Authors
-#### Team -  DADCloud
-- [@Dhairya Dudhatra](https://github.com/Dhairya-Dudhatra)
-- [@Arush Patel](https://github.com/arushPatel10)
-- [@Dirgh Patel](https://github.com/DIRGH712)
-
-
 ## How to Setup the environment
 To run this project, clone this repo:
     ```
@@ -20,6 +13,8 @@ To run this project, clone this repo:
     ```
 
 Now setup these two environments as suggested:
+
+
 
 
 **Web Tier:**
@@ -86,4 +81,28 @@ Now setup these two environments as suggested:
     ```
 
 
+**AWS Resources Setup:**
 
+* AWS SQS  
+
+    - Create two queues with default settings and name them as `web-app-image-transport` and `app-web-result-queue`.
+
+    
+* AWS CloudWatch
+
+    - Create two alarms. One for scaling up and scaling down.
+    - Select time-period of one minute and 
+
+* AWS EC2 AutoScaling
+
+    -
+    
+
+
+
+
+## Authors
+#### Team -  DADCloud
+- [@Dhairya Dudhatra](https://github.com/Dhairya-Dudhatra)
+- [@Arush Patel](https://github.com/arushPatel10)
+- [@Dirgh Patel](https://github.com/DIRGH712)
