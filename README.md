@@ -48,6 +48,7 @@ Setup these three environments as suggested:
 * AWS S3
     - Create two s3 buckets with default settings and with unique names.
     - Rewrite these names in the `app-tier.py` file. 
+    
 **Web Tier:**
 
 - Create an Ubuntu based EC2 instance in AWS.
