@@ -109,7 +109,9 @@ Setup these three environments as suggested:
     $ sudo systemctl status pythonbackend.service
     ```
 
-
+## Future Work
+- Deploying this architecture manually becomes tedious and error-prone for any person.
+- Currently I am working on AWS Cloudformation to make a stack for this architecture and using AWS Code Pipeline we can directly deploy the code from     Github.
     
     
 
