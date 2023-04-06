@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/flaskapp
-ExecStart=/usr/bin/python3 /home/ubuntu/webtier-app.py
+ExecStart=/usr/bin/python3 /home/ubuntu/flaskapp/webtier-app.py
 Restart=always
 
 [Install]
