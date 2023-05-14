@@ -12,7 +12,7 @@ import sys
 import time
 
 url = str(sys.argv[1])
-img = Image.open(urlopen(url))
+img = Image.open(url)
 
 model = models.resnet18(pretrained=True)
 
