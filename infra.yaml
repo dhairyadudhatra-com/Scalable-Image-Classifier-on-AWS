@@ -1,0 +1,234 @@
+Resources:
+    RequestQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+          QueueName: "web-app-image-transport"
+          MaximumMessageSize: 6144
+          ReceiveMessageWaitTimeSeconds: 5
+          MessageRetentionPeriod: 420
+
+    ResponseQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+          QueueName: "app-web-result-queue"
+          MaximumMessageSize: 6144
+          ReceiveMessageWaitTimeSeconds: 5
+          MessageRetentionPeriod: 420
+
+    InputBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+          BucketName: input-bucket-images
+
+    OutputBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+          BucketName: output-bucket-images
+
+    ScaleUpAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        ComparisonOperator: GreaterThanThreshold
+        EvaluationPeriods: 1
+        Statistic: Sum
+        AlarmName: ScaleUpAlarm
+        Namespace: AWS/SQS
+        MetricName: ApproximateNumberOfMessagesVisible
+        Dimensions:
+          - Value: !Ref RequestQueue
+            Name: SQSQueueName
+        Period: 60
+        Threshold: 5
+
+    ScaleDownAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        ComparisonOperator: LessThanThreshold
+        EvaluationPeriods: 1
+        Statistic: Sum
+        AlarmName: ScaleDownAlarm
+        Namespace: AWS/SQS
+        MetricName: ApproximateNumberOfMessagesVisible
+        Dimensions:
+          - Value: !Ref RequestQueue
+            Name: SQSQueueName
+        Period: 60
+        Threshold: 5
+
+    WebApptierSG:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: sg for web-app-tier
+        SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+    WebtierRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+          RoleName: "web-tier-sqs-access-role"
+          AssumeRolePolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Principal:
+                    Service: "ec2.amazonaws.com"
+                  Action: "sts:AssumeRole"
+          Path: "/"
+          Policies:
+            - PolicyName: "sqs-access-policy"
+              PolicyDocument:
+                  Version: "2012-10-17"
+                  Statement:
+                  - Effect: "Allow"
+                    Action: 
+                    - "sqs:SendMessage"
+                    - "sqs:DeleteMessage"
+                    - "sqs:GetQueueUrl"
+                    - "sqs:ChangeMessageVisibility"
+                    Resource: !GetAtt RequestQueue.Arn
+                  - Effect: "Allow"
+                    Action: 
+                    - "sqs:ReceiveMessage"
+                    - "sqs:DeleteMessage"
+                    - "sqs:GetQueueUrl"
+                    - "sqs:ChangeMessageVisibility"
+                    Resource: !GetAtt ResponseQueue.Arn
+
+    WebtierInstanceProfile:
+      Type: "AWS::IAM::InstanceProfile"
+      Properties:
+          Roles:
+            - !Ref WebtierRole
+
+    WebtierInstance:
+      Type: "AWS::EC2::Instance"
+      Properties:
+          ImageId: ami-0557a15b87f6559cf
+          InstanceType: t2.micro
+          SecurityGroups: 
+          - !Ref WebApptierSG
+          IamInstanceProfile: !Ref WebtierInstanceProfile
+          Tags:
+          - Key: Name
+            Value: webtierinstance
+          UserData:
+            Fn::Base64: !Sub |
+              #!/bin/bash
+              sudo apt update
+              mkdir /home/ubuntu/flaskapp
+              cd /home/ubuntu/flaskapp
+              sudo apt install nginx python3-pip -y
+              sudo pip3 install flask boto3
+              wget https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/webtier-app.py https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/default
+              sudo chmod +x webtier-app.py
+              nohup python3 webtier-app.py > /dev/null 2>&1 &
+              sudo rm /etc/nginx/sites-available/default
+              mv default /etc/nginx/sites-available/
+              cd /etc/nginx/sites-enabled/
+              sudo rm default
+              sudo ln -s /etc/nginx/sites-available/default .
+              sudo systemctl restart nginx
+
+    ApptierRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: "app-tier-sqs-s3-access-role"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "ec2.amazonaws.com"
+            Action: "sts:AssumeRole"
+        Path: "/"
+        Policies:
+        - PolicyName: "sqs-s3-access-policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: "Allow"
+              Action: 
+              - "sqs:ReceiveMessage"
+              - "sqs:DeleteMessage"
+              - "sqs:GetQueueUrl"
+              - "sqs:ChangeMessageVisibility"
+              Resource: !GetAtt RequestQueue.Arn
+            - Effect: "Allow"
+              Action: 
+              - "sqs:SendMessage"
+              - "sqs:DeleteMessage"
+              - "sqs:GetQueueUrl"
+              - "sqs:ChangeMessageVisibility"
+              Resource: !GetAtt ResponseQueue.Arn
+            - Effect: "Allow"
+              Action: 
+              - "s3:*"
+              Resource: "*"
+
+    ApptierInstanceProfile:
+      Type: "AWS::IAM::InstanceProfile"
+      Properties:
+        Roles:
+        - !Ref ApptierRole
+
+    ApptierTemplate:
+      Type: AWS::EC2::LaunchTemplate
+      Properties:
+        LaunchTemplateName: ApptierTemplate
+        LaunchTemplateData:
+          BlockDeviceMappings:
+          - Ebs:
+              VolumeSize: 25
+              VolumeType: gp2
+              DeleteOnTermination: true
+              Encrypted: true
+            DeviceName: /dev/sda1
+          IamInstanceProfile:
+            Arn: !GetAtt 
+            - ApptierInstanceProfile
+            - Arn
+          TagSpecifications:
+          - ResourceType: "instance"
+            Tags:
+            - Key: Name
+              Value: apptierinstance
+          ImageId: ami-0557a15b87f6559cf
+          InstanceType: t2.micro
+          SecurityGroups:
+          - !Ref WebApptierSG
+          UserData:
+            Fn::Base64: !Sub |
+              #!/bin/bash
+              sudo apt update
+              cd $HOME
+              sudo apt install python3-pip -y
+              sudo pip3 install boto3
+              sudo wget https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/requirements.txt https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/apptier-app.py https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/image_classification.py https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/imagenet-labels.json
+              pip3 install -r requirements.txt --no-cache-dir
+              sudo chmod +x apptier-app.py
+              sudo python3 apptier-app.py &
+ 
+    apptierAutoScaling:
+      Type: AWS::AutoScaling::AutoScalingGroup
+      Properties:
+        LaunchTemplate:
+          LaunchTemplateId: !Ref ApptierTemplate
+          Version: !GetAtt ApptierTemplate.LatestVersionNumber
+        AutoScalingGroupName: apptierAutoscaling
+        AvailabilityZones: 
+        - us-east-1a
+        - us-east-1b
+        MinSize: 1
+        MaxSize: 1
+        DesiredCapacity: 1
