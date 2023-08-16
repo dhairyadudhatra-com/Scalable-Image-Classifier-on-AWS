@@ -33,3 +33,6 @@ Setup these three environments as suggested:
 ## Creators
 #### Team -  DADCloud
 - [@Dhairya Dudhatra](https://github.com/Dhairya-Dudhatra)
+
+##Blog
+- [https://medium.com/@dhairyadudhatra4819/scalable-image-classifier-on-aws-fa44444c4c6c](https://medium.com/@dhairyadudhatra4819/scalable-image-classifier-on-aws-fa44444c4c6c)
