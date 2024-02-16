@@ -33,13 +33,13 @@ while True:
         
         #Sending image to input bucket
         with open(imagename, 'rb') as f:
-            s3.upload_fileobj(f, 'input-bucket-images', imagename)
+            s3.upload_fileobj(f, 'input-bucket-images-dhairya-test', imagename)
 
         #Sending result to output bucket
         output_string =  output.decode('utf-8')
         print(output_string)
         output = b"(" + output[0:-1] + b")"
-        s3.put_object(Body=output, Bucket='output-bucket-images', Key=imagename.split('.')[0])
+        s3.put_object(Body=output, Bucket='output-bucket-images-dhairya-test', Key=imagename.split('.')[0])
 
         os.remove(imagename)
 
