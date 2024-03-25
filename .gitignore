@@ -1,0 +1,5 @@
+terraform_demo/dev/stage1/.terraform
+terraform_demo/dev/stage1/.tfoveride
+terraform_demo/dev/stage1/.tfstate
+terraform_demo/dev/stage1/*.tfstate.*
+terraform_demo/dev/stage1/*.tfvars.json

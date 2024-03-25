@@ -3,13 +3,19 @@ import boto3
 import base64
 import json
 import time
+import os
 app = Flask(__name__)
 
-sqs = boto3.client('sqs',region_name='us-east-1')
+region = os.environ['AWS_REGION']
+request_queue_name = os.environ['REQUEST_QUEUE_NAME']
+response_queue_name = os.environ['RESPONSE_QUEUE_NAME']
+
+
+sqs = boto3.client('sqs',region_name=region)
 
 #Importing Queue URLs
-input_queue_url = sqs.get_queue_url(QueueName="web-app-image-transport")["QueueUrl"]
-output_queue_url = sqs.get_queue_url(QueueName="app-web-result-queue")["QueueUrl"]
+input_queue_url = sqs.get_queue_url(QueueName=request_queue_name)["QueueUrl"]
+output_queue_url = sqs.get_queue_url(QueueName=response_queue_name)["QueueUrl"]
 
 #Defining a request handler 
 @app.route('/', methods=["POST"])

@@ -20,7 +20,7 @@ parser.add_argument('--image_folder', type=str, help='the path of the folder whe
 
 args = parser.parse_args()
 url = args.url
-
+print("url: ", url)
 
 def send_one_request(image_path):
     # Define http payload, "myfile" is the key of the http payload
@@ -47,9 +47,9 @@ for i, name in enumerate(os.listdir(image_folder)):
         break
     image_path_list.append(image_folder + name)
 
-
+print(image_path_list)
 with ThreadPoolExecutor(max_workers = num_max_workers) as executor:
-      executor.map(send_one_request, image_path_list)
+    executor.map(send_one_request, image_path_list)
 
 end_time =time.time()
 print("Total time taken: ",end_time-start_time)

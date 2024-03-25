@@ -4,11 +4,21 @@ import json
 import subprocess
 import os
 
-sqs = boto3.client('sqs',region_name='us-east-1')
+
+
+region = os.environ['AWS_REGION']
+request_queue_name = os.environ['REQUEST_QUEUE_NAME']
+response_queue_name = os.environ['RESPONSE_QUEUE_NAME']
+input_bucket_name = os.environ['INPUT_BUCKET_NAME']
+output_bucket_name = os.environ['OUTPUT_BUCKET_NAME']
+
+
+sqs = boto3.client('sqs',region_name=region)
 
 #Importing Queue URLs
-input_queue_url = sqs.get_queue_url(QueueName="web-app-image-transport")["QueueUrl"]
-output_queue_url = sqs.get_queue_url(QueueName="app-web-result-queue")["QueueUrl"]
+input_queue_url = sqs.get_queue_url(QueueName=request_queue_name)["QueueUrl"]
+output_queue_url = sqs.get_queue_url(QueueName=response_queue_name)["QueueUrl"]
+
 
 s3 = boto3.client('s3')
 
@@ -33,13 +43,13 @@ while True:
         
         #Sending image to input bucket
         with open(imagename, 'rb') as f:
-            s3.upload_fileobj(f, 'input-bucket-images-dhairya-test', imagename)
+            s3.upload_fileobj(f, input_bucket_name, imagename)
 
         #Sending result to output bucket
         output_string =  output.decode('utf-8')
         print(output_string)
         output = b"(" + output[0:-1] + b")"
-        s3.put_object(Body=output, Bucket='output-bucket-images-dhairya-test', Key=imagename.split('.')[0])
+        s3.put_object(Body=output, Bucket=output_bucket_name, Key=imagename.split('.')[0])
 
         os.remove(imagename)
 

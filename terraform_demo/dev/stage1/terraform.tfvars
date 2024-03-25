@@ -1,0 +1,7 @@
+input_bucket_name   = "input-bucket-dhairya-test"
+output_bucket_name  = "output-bucket-dhairya-test"
+Request_Queue_Name  = "Dhairya_Request_Queue"
+Response_Queue_Name = "Dhairya_Response_Queue"
+vpc_cidr            = "10.0.0.0/16"
+subnet_cidr         = "10.0.128.0/17"
+subnet_az_name      = "us-west-2b"
