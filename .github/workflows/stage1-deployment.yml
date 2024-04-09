@@ -31,8 +31,8 @@ jobs:
           aws-region: ${{env.AWS_REGION}}
       - name: Terraform Init
         run: terraform init ./terraform_demo/dev/stage1
-      - name: Terraform Plan
-        run: terraform plan ./terraform_demo/dev/stage1
+      # - name: Terraform Plan
+      #   run: terraform plan ./terraform_demo/dev/stage1
       - name: Terraform apply
         run: terraform apply --auto-approve ./terraform_demo/dev/stage1
       
