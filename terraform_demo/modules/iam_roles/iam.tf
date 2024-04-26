@@ -1,16 +1,12 @@
-# IAM Role for Webtier
-# data "aws_s3_bucket" "input_bucket"{
-#   bucket = var.input_bucket
-# }
-# data "aws_s3_bucket" "output_bucket"{ 
-#   bucket = var.output_bucket
-# }
-# data "aws_sqs" "request_queue" {
-#   name = var.request_queue_name
-# }
-# data "aws_sqs" "response_queue" {
-#   name = var.response_queue_name
-# }
+resource "aws_iam_instance_profile" "webtier_iam_profile"{
+  name = "webtier-iam-profile"
+  role = aws_iam_role.webtier_role.name
+}
+
+resource "aws_iam_instance_profile" "apptier_iam_profile"{
+  name = "apptier-iam-profile"
+  role = aws_iam_role.apptier_role.name
+}
 
 resource "aws_iam_role" "webtier_role" {
   name               = "web-tier-sqs-access-role"

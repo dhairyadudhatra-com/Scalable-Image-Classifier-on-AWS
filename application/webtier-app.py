@@ -6,9 +6,9 @@ import time
 import os
 app = Flask(__name__)
 
-region = os.environ['AWS_REGION']
-request_queue_name = os.environ['REQUEST_QUEUE_NAME']
-response_queue_name = os.environ['RESPONSE_QUEUE_NAME']
+region = 'ap-south-1'
+request_queue_name = "Dhairya_Request_Queue"
+response_queue_name = "Dhairya_Response_Queue"
 
 
 sqs = boto3.client('sqs',region_name=region)

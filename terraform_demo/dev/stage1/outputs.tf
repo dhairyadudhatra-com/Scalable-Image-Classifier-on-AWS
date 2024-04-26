@@ -26,6 +26,10 @@ output "Public_VPC" {
   value = module.vpc.vpc_id
 }
 
-output "TierSG"{
+output "Public_Subnet" {
+  value = module.vpc.Public_Subnet
+}
+
+output "TierSG" {
   value = module.security_group.TierSG
 }

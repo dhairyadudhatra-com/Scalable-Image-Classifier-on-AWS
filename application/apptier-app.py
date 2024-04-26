@@ -6,11 +6,11 @@ import os
 
 
 
-region = os.environ['AWS_REGION']
-request_queue_name = os.environ['REQUEST_QUEUE_NAME']
-response_queue_name = os.environ['RESPONSE_QUEUE_NAME']
-input_bucket_name = os.environ['INPUT_BUCKET_NAME']
-output_bucket_name = os.environ['OUTPUT_BUCKET_NAME']
+region = "ap-south-1"
+request_queue_name = "Dhairya_Request_Queue"
+response_queue_name = "Dhairya_Response_Queue"
+input_bucket_name = "input-bucket-dhairya-test12"
+output_bucket_name = "output-bucket-dhairya-test12"
 
 
 sqs = boto3.client('sqs',region_name=region)
