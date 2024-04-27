@@ -29,8 +29,6 @@ module "iam_roles" {
   source             = "../../modules/iam_roles/"
   request_queue_arn  = module.sqs.Request_Queue_ARN
   response_queue_arn = module.sqs.Response_Queue_ARN
-  input_bucket_arn   = module.s3.input_bucket_arn
-  output_bucket_arn  = module.s3.output_bucket_arn
 }
 
 module "vpc" {
@@ -62,5 +60,16 @@ module "apptier_ec2" {
   ami_id              = data.aws_ami.Ubuntu_AMI.id
   subnet_id           = module.vpc.Public_Subnet
 }
+
+module "alarms" {
+  source = "../../modules/cloudwatch_alarms/"
+
+  Request_Queue_Name = var.Request_Queue_Name
+  upscale_policy_arn = module.apptier_ec2.upscale_policy_arn
+  downscale_policy_arn = module.apptier_ec2.downscale_policy_arn 
+}
+
+
+
 
 

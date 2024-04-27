@@ -109,7 +109,7 @@ resource "aws_iam_policy" "apptier_policy" {
     {
       "Effect": "Allow",
       "Action": "s3:PutObject",
-      "Resource": [var.input_bucket_arn, var.output_bucket_arn]
+      "Resource": ["*"]
     }
   ]
 })
