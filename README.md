@@ -9,7 +9,18 @@ We have used EC2 instances for hosting Web and App tier. Web tier sends these im
 ## Architecture
 ![Arch Image](https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS/raw/main/arch.png)
 
-## How to Run the Project
+## How to Setup the Environments
+Setup these three environments as suggested:
+
+
+**AWS Resources Setup:**
+- Store your AWS profile to work in `ap-south-1` region.
+- Go to `/terraform_demo/dev/stage1`
+- `terraform init`
+- `terraform apply`
+- It will take around 5-10 minutes for AWS to create all the resources.
+  
+## Run Locally
 - To run this project, clone this repo:
     ```
     $ git clone https://github.com/Dhairya-Dudhatra/Scalable-Image-Classifier-on-AWS.git
@@ -21,14 +32,7 @@ We have used EC2 instances for hosting Web and App tier. Web tier sends these im
     This command will send  100 concurrent requests to the web server.
     
 
-## How to Setup the Environments
-Setup these three environments as suggested:
 
-
-**AWS Resources Setup:**
-- Open the CloudFormation console in your AWS environment.
-- Create a stack from infra.yaml file.
-- It will take around 5-10 minutes for AWS to create all the resources.
 
 ## Creators
 #### Team -  DADCloud
